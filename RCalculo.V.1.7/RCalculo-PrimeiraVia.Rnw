@@ -1,0 +1,917 @@
+<<Chunk1,echo=FALSE>>=
+
+  repositorio = "C:\\Users\\Pedro.Pedro-PC\\Desktop\\RCalculo.V.1.7"
+  autor = "Equilibrio"
+
+  ####PRIMEIRA VIA#############
+  
+  #BEM VINDOS AO RCALCULOS.V.1.7. Insira os dados do contrato e siga os procedimentos:
+  #1)Características pessoais (APENAS AQUI UTILIZE ASPAS "" NAS INFORMAÇÕES. EX: "Crefisa". Os dados devem aparecer na cor verde)
+  Nome = "Pedro Gonçalves da Silva"
+  Numero.de.contrato = "345598"
+  Banco = 'BMG'
+  
+  #2)Data de Contrato (APARTIR DAQUI, NÃO UTILIZE ASPAS "" EM NENHUM CAMPO. Os dados devem aparecer na cor azul)
+  dia.c = 7
+  mes.c = 2
+  ano.c = 2018
+  
+  #3)Início de Amortização
+  dia.a = 1
+  mes.a = 3
+  ano.a = 2018
+  
+  #4)Tipo de contrato(1- Crédito Pessoal Total; 2-Crédito Pessoal Consignado Total; 3-Aquisição de Veículos; 4-Crédito Pessoal Consignado para setor público ; 5-Aquisição de outros bens)
+  tipo.de.contrato = 1
+  
+  #5)Tipo de taxa(1- taxa de juros; 2- CET)
+  tipo.de.taxa = 2
+  
+  #6)Taxa contratada
+  #ATENÇÃO!(se a opcao da informação (5) for taxa de juros, utilize a taxa mensal. Caso for CET, utilize a taxa anual)
+  taxa.contratada = 698.53
+  
+  #7)Características do contrato
+  parcelas = 12
+  valor.do.emprestimo = 2047.88
+  valor.da.prestacao = 415.02
+  
+  #8)Informação do valor do IOF (CASO NÃO HOUVER IOF, COLOQUE "0" ZERO)
+  valor.IOF = 47.88
+  
+  #9)Informações Bacen (taxa ANUAL)
+  taxa.bacen.anual = 46.92
+  
+  #PARABENS, chegamos ao FIM. 
+  #Depois de preencher TODOS os dados, clique em "Compile PDF". Se o documento não abrir automaticamente, pressione o ícone na direita de "compile PDF".
+  #Caso não aparecer uma frase na capa dizendo que o contrato não está abusivo, o contrato está abusivo, então imprima o documento e estamos prontos.
+  
+  #link do site da bacen: https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries
+  
+  #20745- Crédito Pessoal Consignado para setor público
+  #20748 - Crédito Pessoal Total (boleto)
+  #20747 - Crédito Pessoal Consignado Total (débito)
+  #20749 - Aquisição de Veículos 
+  #20750- Aquisição de outros bens
+  
+@
+  
+  \documentclass{article}[abntex2]
+
+%----------------------------------------------------------------------------------
+% Pacotes Utilizados
+%----------------------------------------------------------------------------------
+
+
+\usepackage[brazilian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{xcolor}
+\usepackage{xwatermark}
+
+\usepackage{helvet}
+
+\UseRawInputEncoding
+
+\usepackage{geometry}
+ 
+\usepackage{graphicx}
+\usepackage{watermark}
+
+\usepackage{longtable}
+\usepackage{booktabs}
+
+\usepackage{draftwatermark}
+ 
+%----------------------------------------------------------------------------------
+% Definicao pré-documento
+%----------------------------------------------------------------------------------
+
+\pagenumbering{gobble}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\renewcommand{\baselinestretch}{1.5}
+
+\geometry{a4paper, top=65.625mm, left=27.5625mm, bottom=57.75mm, right=19.6875mm}
+
+\watermark{\centering \put(-20,0){\includegraphics[scale=1]{test.png}} }
+
+\SetWatermarkText{{\parbox{20cm}{%
+ Equilíbrio Assessoria Econômica - Avenida João Pessoa, n$\mathrm{{}^\circ}$ 52, Sala 39 \\
+ CEP 90.040-000 -- Porto Alegre/RS\\ 
+ recalculos@equilibrioufrgs.com / www.equilibrioufrgs.com\\
+ Fone: + 55 (51) 3308 3347}}}
+\SetWatermarkColor[gray]{0.01}
+\SetWatermarkFontSize{0.35cm}
+\SetWatermarkAngle{0}
+\SetWatermarkHorCenter{12.7cm}
+\SetWatermarkVerCenter{26.5cm}
+
+%----------------------------------------------------------------------------------
+  % Começo do documento
+%----------------------------------------------------------------------------------
+  
+\begin{document}
+
+  
+<<Chunk2,echo=FALSE>>=
+  
+  if (!is.element("devtools", installed.packages()[,1])){
+        install.packages("devtools", dep = TRUE)}
+  
+  if (!is.element("FinCal", installed.packages()[,1])){
+   library(devtools)     
+   install_github("felixfan/FinCal")}
+
+  if (!is.element("knitr", installed.packages()[,1])){
+        install_github("knitr")}
+  
+  if (!is.element("kableExtra", installed.packages()[,1])){
+        install.packages("kableExtra", dep = TRUE)}
+
+   if (!is.element("xlsx", installed.packages()[,1])){
+        install.packages("xlsx", dep = TRUE)}
+  
+  
+  library(FinCal)
+
+  options(OutDec = ",")
+  options(scipen=999)
+  
+  #TAXA CONTRATADA
+  if (tipo.de.taxa == 1) {
+  fv.2 = fv(taxa.contratada/100, 12, pv=1)
+  taxa.contratada.anual.1 = (1+taxa.contratada/100)**12-1
+  taxa.contratada.anual.2 = round(taxa.contratada.anual.1*100, digits = 2)
+  }
+  
+  if (tipo.de.taxa == 2){
+    taxa.contratada.anual.2 = taxa.contratada
+    taxa.contratada = round(((1+taxa.contratada/100)**(1/12)-1)*100, digits = 2)
+  }
+  
+    pmt.contratado = round(-(pmt(taxa.contratada/100, n = parcelas, pv = valor.do.emprestimo,fv = 0, type = 0)), digits = 2)
+    
+  #TAXA APLICADA
+  taxa.aplicada.1 = discount.rate(n=parcelas, fv = 0, pmt = -(valor.da.prestacao), pv = valor.do.emprestimo,lower=0.0001, upper = 1)
+  taxa.aplicada.2 = round(taxa.aplicada.1*100, digits = 2)
+
+  taxa.aplicada.anual.1 <- ((1+taxa.aplicada.1)**12)-1
+  taxa.aplicada.anual.2 = round(taxa.aplicada.anual.1*100, digits = 2)
+  
+  #TAXA BACEN
+  taxa.bacen.1 = ((1+taxa.bacen.anual/100)**(1/12))-1
+  taxa.bacen = round(taxa.bacen.1*100, digits = 2)
+  @
+  
+    <<Chunk3,echo=FALSE>>=
+    if (tipo.de.contrato == 1) {
+      tipo.contrato = "Empréstimo Pessoal Total"
+    }
+  if (tipo.de.contrato == 2) {
+    tipo.contrato = "Empréstimo Pessoal Consignado Total"
+  }
+  if (tipo.de.contrato == 3) {
+    tipo.contrato = "Financiamento de Veículo"
+  }
+     if (tipo.de.contrato == 4) {
+    tipo.contrato = "Crédito Pessoal Consignado para setor público"
+   }
+   if (tipo.de.contrato == 5) {
+    tipo.contrato = "Aquisição de outros bens"
+   }
+  if (tipo.de.taxa == 1) {
+    tipo.taxa = "taxa de juros"
+    tipo.taxa.2 = "taxa de juros contratada"
+    tipo.taxa.3 = "Taxa de juros contratada"
+    complemento.1 = "a"
+    complemento.2 = "informada"
+    complemento.3 = "especificada"
+    complemento.4 = "contratada"
+    }
+  
+  if (tipo.de.taxa == 2) {
+    tipo.taxa = "CET"
+    tipo.taxa.2 = "Custo Efetivo Total (CET)"
+    tipo.taxa.3 = tipo.taxa.2
+    complemento.1 = "o"
+    complemento.2 = "informado"
+    complemento.3 = "especificado"
+    complemento.4 = "contratado"
+  }
+  
+   dia = as.numeric(substr(x = as.character(Sys.Date()), start = 9, stop = 10))
+   mes = as.numeric(substr(x = as.character(Sys.Date()), start = 6, stop = 7))
+   ano = as.numeric(substr(x = as.character(Sys.Date()), start = 1, stop = 4))
+  
+  if (taxa.aplicada.2<taxa.bacen) {
+    gg = "!!!!NÃO ESTÁ ABUSIVO, PORFAVOR UTILIZE O DOCUMENTO DE NÃO ABUSIVIDADE!!!!
+    (PARECER)"
+  }
+   if(taxa.aplicada.2>taxa.bacen) {
+     gg = ""
+   }
+   
+   if (valor.IOF>0) {
+     cmp.1.iof = "IOF: R"
+     cmp.2.iof = paste("$",as.character(formatC(valor.IOF, digits = 2, format = "f", big.mark=".")))
+     cmp.3.iof = "É cobrado IOF no valor de R"
+   }
+   if (valor.IOF == 0) {
+     cmp.1.iof = ""
+     cmp.2.iof = ""
+     cmp.3.iof = ""
+   }
+  @
+    
+<<Chunk4,echo=FALSE>>=
+#Arrumando meses
+  if (mes==1) {
+    mes.por.extenso = "Janeiro"
+  }
+  if (mes==2) {
+    mes.por.extenso = "Fevereiro"
+  }
+  if (mes==3) {
+    mes.por.extenso = "Março"
+  }
+  if (mes==4) {
+    mes.por.extenso = "Abril"
+  }
+  if (mes==5) {
+    mes.por.extenso = "Maio"
+  }
+  if (mes==6) {
+    mes.por.extenso = "Junho"
+  }
+  if (mes==7) {
+    mes.por.extenso = "Julho"
+  }
+  if (mes==8) {
+    mes.por.extenso = "Agosto"
+  }
+  if (mes==9) {
+    mes.por.extenso = "Setembro"
+  }
+  if (mes==10) {
+    mes.por.extenso = "Outubro"
+  }
+  if (mes==11) {
+    mes.por.extenso = "Novembro"
+  }
+  if (mes==12) {
+    mes.por.extenso = "Dezembro"
+  }
+  
+@
+ 
+<<Chunk5,echo=FALSE>>=
+#Arrumando meses
+  if (mes.c==1) {
+    mes.c.2 = "Janeiro"
+  }
+  if (mes.c==2) {
+    mes.c.2 = "Fevereiro"
+  }
+  if (mes.c==3) {
+    mes.c.2 = "Março"
+  }
+  if (mes.c==4) {
+    mes.c.2 = "Abril"
+  }
+  if (mes.c==5) {
+    mes.c.2 = "Maio"
+  }
+  if (mes.c==6) {
+    mes.c.2 = "Junho"
+  }
+  if (mes.c==7) {
+    mes.c.2 = "Julho"
+  }
+  if (mes.c==8) {
+    mes.c.2 = "Agosto"
+  }
+  if (mes.c==9) {
+    mes.c.2 = "Setembro"
+  }
+  if (mes.c==10) {
+    mes.c.2 = "Outubro"
+  }
+  if (mes.c==11) {
+    mes.c.2 = "Novembro"
+  }
+  if (mes.c==12) {
+    mes.c.2 = "Dezembro"
+  }
+
+#Criando os meses e dias de contratacao no formato oficial   
+  if (mes<10) {
+    mes.f = paste("0",as.character(mes), sep="")
+  } 
+  
+  if (mes>=10) {
+    mes.f = mes
+  }
+  if (dia<10) {
+    dia.f = paste("0",as.character(dia), sep="")
+  } 
+  
+  if (dia>=10) {
+    dia.f = dia
+  }   
+#Criando os meses e dias de contratacao no formato oficial   
+  if (mes.c<10) {
+    mes.c.f = paste("0",as.character(mes.c), sep="")
+  } 
+  
+  if (mes.c>=10) {
+    mes.c.f = mes.c
+  }
+  if (dia.c<10) {
+    dia.c.f = paste("0",as.character(dia.c), sep="")
+  } 
+  
+  if (dia.c>=10) {
+    dia.c.f = dia.c
+  }     
+#Criando os meses e dias de amortizacao no formato oficial
+  if (mes.a<10) {
+    mes.a.f = paste("0",as.character(mes.a), sep="")
+  } 
+  
+  if (mes.a>=10) {
+    mes.a.f = mes.a
+  }
+  if (dia.a<10) {
+    dia.a.f = paste("0",as.character(dia.a), sep="")
+  } 
+  
+  if (dia.a>=10) {
+    dia.a.f = dia.a
+  } 
+@
+
+    \begin{flushright}
+  {\Large \textbf{Cálculo Revisional}\par}
+  
+  \vspace{2mm}
+  
+  {\Large \Sexpr{Nome}\par}
+  
+  \vspace{20mm}
+  
+  Porto Alegre, dia \Sexpr{dia} de \Sexpr{mes.por.extenso} de \Sexpr{ano}
+  \end{flushright}
+  
+  {\Large \Sexpr{gg}}
+  
+  \eject
+  
+  \noindent \textbf{Cálculo Revisional de Empréstimo Pessoal}
+  
+  \noindent \textbf{Cliente}: \Sexpr{Nome} -- \Sexpr{Numero.de.contrato} -- \Sexpr{tipo.contrato} do Banco \Sexpr{Banco}.
+  
+  \vspace{5mm}
+  
+  \noindent A presente análise é composta de 5 partes:
+    
+    \noindent \textbf{Parte I: }Demonstra a composição das prestações pagas e a pagar do cliente através do sistema de amortização de juros da \textbf{TABELA PRICE (Sistema Francês de Amortização) }de acordo com as informações e números atuais do contrato com a empresa financiadora.
+  
+  \noindent \textbf{Parte II: }Demonstra a composição das prestações do financiamento través da \textbf{TABELA PRICE} caso fosse realizado com a taxa de juros média de mercado divulgada pelo \textbf{Banco Central} (BACEN) referente ao mês de \textbf{\Sexpr{mes.c.2}} de \textbf{\Sexpr{ano.c}}, data da contratação.
+  
+  \noindent \textbf{Parte III: }Considera os \textbf{pagamentos já realizados com a parcela aplicada}, amortizando o restante da dívida com o valor das parcelas indicado na parte II e, dessa forma, atualizando o prazo de quitação e o valor da dívida.
+  
+  \noindent \textbf{Parte IV: }Demonstra a difereça entre os pagamentos conforme a taxa aplicada e a taxa média divulgada pelo Banco Central.
+  
+  \noindent \textbf{Parte V: }Conclusão
+  
+  \eject
+  
+  \textbf{Parte I:}
+  
+  \vspace{5mm}
+  
+  Demonstra a composição das prestações pagas e a pagar do cliente através do sistema de amortização de juros da \textbf{TABELA PRICE (Sistema Francês de Amortização)} de acordo com as informações e números atuais do contrato com a empresa financiadora.
+  
+  \vspace{5mm}
+  
+  \noindent \textbf{Dados retirados do contrato:}
+  
+  \vspace{5mm}
+  
+  \noindent Data de Contratação: \Sexpr{dia.c.f}/\Sexpr{mes.c.f}/\Sexpr{ano.c}
+  
+  \noindent Início de Amortização: \Sexpr{dia.a.f}/\Sexpr{mes.a.f}/\Sexpr{ano.a}
+  
+  \noindent \Sexpr{parcelas} Parcelas \textit{(Baseadas no Sistema Francês de Amortização ou Price)}
+  
+  \noindent \Sexpr{tipo.taxa.3}: \Sexpr{taxa.contratada}\% a.m / \Sexpr{taxa.contratada.anual.2}\% a.a
+  
+  \noindent Valor Financiado: \textit{R\$ \Sexpr{formatC(valor.do.emprestimo, digits = 2, format = "f", big.mark=".")}}
+  
+  \noindent Valor da parcela: R\$ \Sexpr{formatC(valor.da.prestacao, digits = 2, format = "f", big.mark=".")}
+  
+  \noindent \Sexpr{cmp.1.iof}\\Sexpr{cmp.2.iof}
+  
+  \noindent Obs: Há diferença entre \Sexpr{complemento.1} \Sexpr{tipo.taxa.2} (\Sexpr{taxa.contratada}\% a.m / \Sexpr{taxa.contratada.anual.2}\% a.a) e a taxa de juros aplicada (\Sexpr{taxa.aplicada.2}\% a.m / \Sexpr{taxa.aplicada.anual.2}\% a.a). 
+  
+  \vspace{5mm}
+  
+  \centerline{A Tabela 1 refere-se ao valor e a composição das prestações pagas pelo Cliente:}
+  \centerline{TABELA 1 - Taxa aplicada ao mês}
+  
+  \vspace{1mm}
+  
+  <<Chunk6,echo=FALSE>>=
+    pv <- valor.do.emprestimo
+  pmt <- valor.da.prestacao
+  i.2 <- taxa.aplicada.1
+  n <- parcelas
+  
+  i.1 <- round(i.2, digits = 4)
+  
+  Parcela.calculo = seq(0,n)
+  
+  Parcela = seq(1:(n+1))
+  
+  juros.1 <- rep((1+i.1), n+1)
+  
+  PV <- vector("numeric", n+1)
+  
+  Juros <- vector("numeric", n+1)
+  
+  Amortizacao <- vector("numeric", n+1)
+  
+  PV[1] = pv
+  
+  for (x in Parcela) {
+    if (x>1) {
+      Juros[x] = PV[(x-1)]*(i.1)
+      Juros[x] = round(Juros[x], digits = 2)
+      
+      Amortizacao[x] = pmt-Juros[x]
+      Amortizacao[x] = round(Amortizacao[x], digits = 2)
+      
+      PV[x] = PV[x-1] - Amortizacao[x]
+      PV[x] = round(PV[x], digits = 2)
+  }
+}
+
+  Amortizacao[(n+1)] = PV[n]
+  
+  PV[(n+1)] = 0
+  
+  Prestacao = rep(pmt, n+1)
+  Prestacao[1] = 0
+  
+  if (tipo.de.contrato == 1) {
+    Juros[n+1] = Prestacao[n+1]-Amortizacao[n+1]
+  }
+  
+  
+  tabela.1 <- data.frame("Parcela" = Parcela.calculo, "Prestação" = Prestacao, "Juros" = Juros, "Amortização" = Amortizacao, "Valor total do crédito" = PV)
+  
+  vtd = pmt*n
+  @
+    
+    \begin{center}
+<<echo=FALSE,results='asis'>>=
+    library(knitr)
+    library(kableExtra)
+kable(tabela.1, "latex", longtable = T, booktabs = T)
+  @
+    \end{center}
+    \vspace{5mm}
+  
+  \begin{center}
+  \begin{tabular}{|p{2in}|p{2in}|p{1.5in}} \hline
+  Valor total da dívida: & \centerline{R\$ \Sexpr{formatC(vtd, digits = 2, format = "f", big.mark=".")}} \\ \hline
+  Taxa mensal de juros aplicada: & \centerline{\Sexpr{taxa.aplicada.2} \%} \\ \hline
+  Taxa anual de juros aplicada: & \centerline{\Sexpr{taxa.aplicada.anual.2} \%} \\ \hline
+  \end{tabular}
+  \end{center}
+  
+  \vspace{5mm}
+
+<<Chunk7,echo=FALSE>>=
+diferenca.taxa = abs(pmt.contratado-valor.da.prestacao)
+  
+  if (valor.da.prestacao>pmt.contratado) {
+    cara.barata = "cara"
+  }
+  if (valor.da.prestacao<=pmt.contratado) {
+    cara.barata = "barata"
+  }
+diferenca.total = abs(pmt.contratado*parcelas - valor.da.prestacao*parcelas)
+  @
+  
+ Aplicando \Sexpr{complemento.1} \Sexpr{tipo.taxa} \Sexpr{complemento.2} no contrato (\Sexpr{taxa.contratada}\% a.m) na Tabela Price, a parcela resultante é \textbf{R\$ \Sexpr{formatC(pmt.contratado, digits = 2, format = "f", big.mark=".")}} mensais. Utilizando a taxa que realmente esté sendo aplicada (\Sexpr{taxa.aplicada.2}\% a.m), a parcela resultante é de R\$ \Sexpr{formatC(valor.da.prestacao, digits = 2, format = "f", big.mark=".")}, que é R\$ \Sexpr{formatC(diferenca.taxa, digits = 2, format = "f", big.mark=".")} mais \Sexpr{cara.barata} do que a parcela segundo \Sexpr{complemento.1} \Sexpr{tipo.taxa} \Sexpr{complemento.3} nos termos do contrato. Ao final das \Sexpr{parcelas} parcelas a diferença total da dívida é de \textbf{R\$ \Sexpr{formatC(diferenca.total, digits = 2, format = "f", big.mark=".")}}. 
+
+\noindent \eject 
+
+\noindent \textbf{Parte II:}
+
+Demonstra a composição das prestações do financiamento através da \textbf{TABELA PRICE} caso fosse realizado com a taxa de juros média de mercado divulgada pelo \textbf{Banco Central} (BACEN) referente ao mês de \Sexpr{mes.c.2} de \Sexpr{ano.c}, data da contratação.
+
+A Tabela 2 refere-se ao recálculo da composição da dívida do beneficiário com aplicação do índice das taxas médias de mercado referentes ao mês de \Sexpr{mes.c.2} de \Sexpr{ano.c}, que é a data do contrato, para \Sexpr{tipo.contrato} publicadas pelo Banco Central (baseadas no Sistema Francês de Amortização).
+
+\noindent \textbf{Taxa de juros anual média de mercado: }\Sexpr{taxa.bacen.anual}\%
+
+\noindent \textbf{Taxa de juros mensal média de mercado: }\Sexpr{taxa.bacen}\%
+
+\vspace{5mm}
+\centerline{TABELA 2 - BACEN}
+
+<<Chunk8,echo=FALSE>>=
+valor.da.prestacao.bacen = -round(pmt(r = taxa.bacen.1, n = parcelas, pv = valor.do.emprestimo, fv = 0), digits = 2)
+
+pmt.B <- valor.da.prestacao.bacen
+
+i.1.B <- taxa.bacen/100
+
+Parcela.calculo.B = seq(0,n)
+
+Parcela.B = seq(1:(n+1))
+
+juros.1.B <- rep((1+i.1.B), n+1)
+
+PV.B <- vector("numeric", n+1)
+
+Juros.B <- vector("numeric", n+1)
+
+Amortizacao.B <- vector("numeric", n+1)
+
+PV.B[1] = pv
+
+for (x in Parcela) {
+  if (x>1) {
+    Juros.B[x] = PV.B[(x-1)]*(i.1.B)
+    Juros.B[x] = round(Juros.B[x], digits = 2)
+    
+    Amortizacao.B[x] = pmt.B-Juros.B[x]
+    Amortizacao.B[x] = round(Amortizacao.B[x], digits = 2)
+    
+    PV.B[x] = PV.B[x-1] - Amortizacao.B[x]
+    PV.B[x] = round(PV.B[x], digits = 2)
+  }
+}
+
+Amortizacao.B[(n+1)] = PV.B[n]
+
+PV.B[(n+1)] = 0
+
+Prestacao.B = rep(pmt.B, n+1)
+Prestacao.B[1] = 0
+
+if (tipo.de.contrato == 1) {
+  Juros.B[n+1] = Prestacao.B[n+1]-Amortizacao.B[n+1]
+}
+
+
+tabela.2 <- data.frame("Parcela" = Parcela.calculo.B, "Prestação" = Prestacao.B, "Juros" = Juros.B, "Amortização" = Amortizacao.B, "Valor total do crédito" = PV.B)
+
+vtd.B = pmt.B*n
+
+diferenca.B = abs(vtd.B-vtd)
+@
+
+ \vspace{4mm}
+
+\begin{center}
+   <<xtable2, results="asis", echo=FALSE>>=
+    library(knitr)
+    library(kableExtra)
+kable(tabela.2, "latex", longtable = T, booktabs = T)
+  @
+\end{center}
+
+\vspace{5mm}
+\begin{center}
+\begin{tabular}{|p{2in}|p{2in}|} \hline
+  Valor da dívida com a taxa de juros média do BACEN: & \centerline{R\$ \Sexpr{formatC(vtd.B, digits = 2, format = "f", big.mark=".")}} \\ \hline
+\end{tabular}
+\end{center}
+  
+  \vspace{5mm}
+  
+\noindent \textbf{Diferença entre o juro pago pela taxa aplicada e pela taxa do BACEN:} R\$ \Sexpr{formatC(diferenca.B, digits = 2, format = "f", big.mark=".")}.
+
+\noindent \eject 
+
+\noindent \textbf{Parte III:}
+
+<<Chunk9,echo=FALSE>>=
+  diferenca.meses = (ano*12+mes)-(ano.a*12+mes.a)+1
+
+if (diferenca.meses<=0) {
+  n.n = n
+}
+
+if (diferenca.meses>0) {
+  n.n <- diferenca.meses
+}
+  i.1.N <- taxa.bacen/100
+  
+  Parcela.calculo.N = seq(0,n.n)
+  
+  Parcela.N = seq(1:(n.n+1))
+  
+  PV.N <- vector("numeric", (n.n+1))
+  
+  Juros.N <- vector("numeric", n.n+1)
+  
+  Amortizacao.N <- vector("numeric", n.n+1)
+  
+  PV.N[1] = pv
+  
+  for (x in Parcela.N) {
+    if (x>1) {
+      Juros.N[x] = PV.N[(x-1)]*(i.1.N)
+      Juros.N[x] = round(Juros.N[x], digits = 2)
+      
+      Amortizacao.N[x] = pmt-Juros.N[x]
+      Amortizacao.N[x] = round(Amortizacao.N[x], digits = 2)
+      
+      PV.N[x] = PV.N[x-1] - Amortizacao.N[x]
+      PV.N[x] = round(PV.N[x], digits = 2)
+    }
+  }
+  Prestacao.N = rep(pmt, n.n+1)
+  Prestacao.N[1] = 0
+  
+  tabela.3.1 <- data.frame("Parcela" = Parcela.calculo.N, "Prestação" = Prestacao.N, "Juros" = Juros.N, "Amortização" = Amortizacao.N, "Valor total do crédito" = PV.N)
+  
+PV.N.3 <- PV.N[n.n+1]
+
+  if (PV.N.3>0) {
+
+n.n.2 <- ceiling(n.period(r = i.1.N, pv = PV.N.3, fv = 0, pmt = -pmt.B))
+
+i.1.N <- taxa.bacen/100
+
+Parcela.calculo.N.2 = seq(0, n.n.2)
+
+Parcela.N.2 = seq(1:(n.n.2+1))
+
+PV.N.2 <- vector("numeric", (n.n.2+1))
+
+Juros.N.2 <- vector("numeric", n.n.2+1)
+
+Amortizacao.N.2 <- vector("numeric", n.n.2+1)
+
+PV.N.2[1] = PV.N[n.n+1]
+
+for (x in Parcela.N.2) {
+  if (x>1) {
+    Juros.N.2[x] = PV.N.2[(x-1)]*(i.1.N)
+    Juros.N.2[x] = round(Juros.N.2[x], digits = 2)
+    
+    Amortizacao.N.2[x] = valor.da.prestacao.bacen-Juros.N.2[x]
+    Amortizacao.N.2[x] = round(Amortizacao.N.2[x], digits = 2)
+    
+    PV.N.2[x] = PV.N.2[x-1] - Amortizacao.N.2[x]
+    PV.N.2[x] = round(PV.N.2[x], digits = 2)
+  }
+}
+Prestacao.N.2 = rep(valor.da.prestacao.bacen, n.n.2+1)
+Prestacao.N.2[1] = 0
+
+
+tabela.3.2 <- data.frame("Parcela" = Parcela.calculo.N.2, "Prestação" = Prestacao.N.2, "Juros" = Juros.N.2, "Amortização" = Amortizacao.N.2, "Valor total do crédito" = PV.N.2)
+
+tabela.3.2 <- tabela.3.2[-1,]
+
+tabela.3.2[,1] = c((diferenca.meses+1):(n.n.2+diferenca.meses))
+
+tabela.3.3 <- rbind(tabela.3.1,tabela.3.2)
+
+Parcela.calculo.N.3 <- tabela.3.3[,1]
+Prestacao.N.3 <- tabela.3.3[,2]
+Juros.N.3 <- tabela.3.3[,3]
+Amortizacao.N.3 <- tabela.3.3[,4]
+PV.N.4 <- tabela.3.3[,5]
+  
+  tabela.3 <- data.frame("Parcela" = Parcela.calculo.N.3, "Prestação" = Prestacao.N.3, "Juros" = Juros.N.3, "Amortização" = Amortizacao.N.3, "Valor total do crédito" = PV.N.4)
+  
+vtd.N <- sum(tabela.3[,2])+PV.N.4[(nrow(tabela.3))]
+n.n.4 = n.n.2
+}
+
+if (PV.N.3<0) {
+  z = (PV.N>0)
+  n.n.3 = sum(z, na.rm=TRUE)
+  tabela.3 = tabela.3.1[0:n.n.3+1,]
+  
+  vtd.N = sum(tabela.3[,2])+tabela.3[n.n.3+1,5]
+  n.n.4 = n.n.3
+}
+@
+
+<<Chunk10, echo = FALSE>>=
+#Correção de texto (já pago/a pagar)
+if (PV.N.3>0) {
+  cmp.1 = "Assim, a partir da"
+  cmp.2 = as.character(diferenca.meses+1)
+  CMP.1 = paste(cmp.1,cmp.2)
+  CMP.2 = "parcela passa a vigorar o valor da prestação calculada na Tabela 2"
+}
+if (PV.N.3<0) {
+  cmp.1 = "Assim, a dívida já estaria paga na"
+  cmp.2 = as.character(n.n.4)
+  CMP.1 = paste(cmp.1,cmp.2)
+  CMP.2 = "parcela aplicada"
+}
+
+if (diferenca.meses >= n) {
+  df.1 = n
+}
+if (diferenca.meses < n) {
+  df.1 = diferenca.meses
+}
+
+if (n.n<=n) {
+  restituicao = n.n*pmt-vtd.N
+}
+
+if (n.n>n) {
+  restituicao = (vtd-vtd.N)
+}
+
+if (PV.N.3<0) {
+  cmp.t5.1 = paste(as.character(nrow(tabela.3)-2), "parcelas de R")
+  cmp.t5.2 = paste("$",(formatC(pmt, digits = 2, format = "f", big.mark=".")), " e 1 parcela de R")
+  cmp.t5.3 = paste("$",(formatC(pmt+tabela.3[nrow(tabela.3),5], digits = 2, format = "f", big.mark=".")))
+  cmp.t5.4 = ""
+  cmp.c.1 = paste("a dívida já estaria paga na", as.character(n.n.4))
+  cmp.c.2 = "parcela aplicada"
+  cmp.f.1 = "Nesse caso, deve haver uma restituição de R"
+  cmp.f.2 = "$"
+  cmp.f.3 = formatC(restituicao, format="f", big.mark=".", digits=2)
+  cmp.f.4 = paste("por parte do Banco", Banco, ".")
+}
+
+if (PV.N.3>0) {
+  cmp.t5.1 = paste(as.character(diferenca.meses), "parcelas de R")
+  cmp.t5.2 = paste("$",formatC(pmt, digits = 2, format = "f", big.mark="."), ",", as.character(nrow(tabela.3)-n.n-2), "parcelas de R")
+  cmp.t5.3 = paste("$",(formatC(pmt.B, digits = 2, format = "f", big.mark=".")), "e 1 parcela de R")
+  cmp.t5.4 = paste("$",(formatC(pmt.B+tabela.3[nrow(tabela.3),5], digits = 2, format = "f", big.mark=".")))
+  cmp.c.1 = paste("a partir da", as.character(diferenca.meses+1))
+  cmp.c.2 = paste("parcela, o novo prazo de quitação da dívida seria de", as.character(nrow(tabela.3)-1), "parcelas")
+  cmp.f.1 = ""
+  cmp.f.2 = ""
+  cmp.f.3 = ""
+  cmp.f.4 = ""
+}
+
+cmp.a.1 = " de acordo com os valores das parcelas no contrato até a parcela "
+
+vtd.novo = formatC(vtd.N, digits = 2, format = "f", big.mark=".")
+dif.novo = formatC(vtd-vtd.N, format="f", big.mark=".", digits=2)
+
+cmp.final.1 = paste("Considerando-se que foram pagas as ", as.character(df.1), " primeiras parcelas do empréstimo, caso fosse aplicada a taxa média de juros do BACEN ", cmp.c.1)
+cmp.final.2 = paste(cmp.c.2, "e o valor total da dívida diminuiria para R")
+cmp.final.3 = paste("$",formatC(vtd.N, format="f", big.mark=".", digits=2),".", cmp.f.1)
+cmp.final.4 = paste(cmp.f.2,cmp.f.3,cmp.f.4)
+
+if (diferenca.meses<=0) {
+  tabela.3 = tabela.2
+  cmp.a.1 = " como a data de amortização está no futuro, a Tabela 3 é a mesma que a Tabela 2, já que seria o caso de nenhuma parcela ter sido paga até o momento"
+  df.1 = ""
+  cmp.2 = ""
+  CMP.1 = ""
+  CMP.2 = ""
+  vtd.novo = formatC(vtd.B, digits = 2, format = "f", big.mark=".")
+  dif.novo = formatC(vtd-vtd.B, format="f", big.mark=".", digits=2)
+  cmp.t5.1 = paste(as.character(n), "parcelas de R")
+  cmp.t5.2 = paste("$",formatC(pmt.B, format="f", big.mark=".", digits=2))
+  cmp.t5.3 = ""
+  cmp.t5.4 = ""
+  cmp.final.1 = ""
+  cmp.final.2 = ""
+  cmp.final.3 = ""
+  cmp.final.4 = ""
+}
+
+if (dia<10) {
+  dia.registro = paste("0", as.character(dia), sep = "")
+} else  {dia.registro = dia}
+if (mes < 10) {
+  mes.registro = paste("0", as.character(mes), sep = "")
+  } else  {mes.registro = mes}
+
+anotacoes.excel = data.frame(nome.autor = autor, "", Beneficiado = Nome, Tipo.de.contrato = tipo.contrato, Banco.de.contrato = Banco, Abusividade = "SIM", valor.emprestimo = valor.do.emprestimo, taxa.de.contrato = taxa.contratada/100, numero.de.parcelas = parcelas, valor.das.parcelas = valor.da.prestacao, taxa.de.aplicacao = taxa.aplicada.1, valor.total.divida = vtd, taxa.do.bacen = taxa.bacen/100, valor.divida.bacen = vtd.novo, diferenca.valores = dif.novo, "",data.realizacao = paste(dia.registro,"/",mes.registro,"/",ano,sep = ""))
+
+setwd(repositorio)
+
+#Check its existence
+library(xlsx)
+
+if (taxa.aplicada.2>taxa.bacen) {
+
+if (!file.exists("registro.xlsx")) {
+  write.xlsx(anotacoes.excel,"registro.xlsx", append = T, row.names = F)
+} else {
+  registro.existente = read.xlsx("registro.xlsx", sheetIndex = 1)
+  novo.registro = rbind(registro.existente, anotacoes.excel)
+  file.remove("registro.xlsx")
+  write.xlsx(novo.registro,"registro.xlsx", append = T, row.names = F)
+}
+}
+
+@
+
+Considera os \textbf{pagamentos já realizados com a parcela aplicada}, amortizando-se o restante da dívida com o valor das parcelas indicado na parte II. Com isso, o prazo de quitação e o valor da dívida são atualizados.
+
+A Tabela 3 tem como base a taxa de juros média do Banco Central (conforme demonstrada na Tabela 2) e os pagamentos realizados até a data de realização deste recálculo (\Sexpr{dia.f}/\Sexpr{mes.f}/\Sexpr{ano}),\Sexpr{cmp.a.1} \Sexpr{df.1}. \Sexpr{CMP.1}$\mathrm{{}^\circ}$ \Sexpr{CMP.2}.
+
+\vspace{5mm}
+\centerline{TABELA 3 -- Com pagamentos}
+\vspace{3mm}
+
+\begin{center}
+ <<xtable3, results="asis", echo=FALSE>>=
+    library(knitr)
+    library(kableExtra)
+kable(tabela.3, "latex", longtable = T, booktabs = T)
+  @
+
+\begin{tabular}{|p{2.4in}|p{0.8in}|} \hline 
+Novo prazo de quitação da dívida & \Sexpr{(nrow(tabela.3)-1)} parcelas \\ \hline 
+Novo valor da dívida & R\$  \Sexpr{vtd.novo}\\ \hline 
+\end{tabular}
+\end{center}
+
+\noindent \eject 
+
+\noindent \textbf{Parte IV:}
+
+A Tabela 4 demonstra a diferença entre os pagamentos conforme a taxa aplicada (Parte I) e os pagamentos conforme a taxa média divulgada pelo Banco Central (Parte II).
+
+\vspace{5mm}
+
+\centerline{TABELA 4}
+
+\vspace{3mm}
+
+\begin{center}
+\begin{tabular}{|p{1in}|p{1.8in}|p{1.8in}|} \hline 
+Taxa & Aplicada (\Sexpr{taxa.aplicada.2}\% a.m.) & Média BACEN (\Sexpr{taxa.bacen}\% a.m.) \\ \hline 
+Parcelas & \Sexpr{n} parcelas de R\$ \Sexpr{formatC(pmt, digits = 2, format = "f", big.mark=".")} & \Sexpr{n} parcelas de R\$ \Sexpr{formatC(pmt.B, format="f", big.mark=".", digits=2)} \\ \hline 
+Total & R\$ \Sexpr{formatC(vtd, format="f", big.mark=".", digits=2)} & R\$ \Sexpr{formatC(vtd.B, format="f", big.mark=".", digits=2)} \\ \hline 
+Diferença & \multicolumn{2}{|p{2.4in}|}{R\$ \Sexpr{formatC(vtd-vtd.B, format="f", big.mark=".", digits=2)}} \\ \hline 
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+
+A Tabela 5 demonstra a diferença total entre a dívida dos pagamentos conforme a taxa aplicada e a dívida dos pagamentos já efetuados (com a parcela contratada) com as prestações futuras (calculadas pela taxa média divulgada pelo Banco Central). Ou seja, entre as dívidas da Parte I e da Parte III.
+
+\vspace{5mm}
+
+\centerline{TABELA 5}
+
+\vspace{3mm}
+
+\begin{center}
+\begin{tabular}{|p{1in}|p{1.8in}|p{1.8in}|} \hline 
+Taxa & Aplicada (\Sexpr{taxa.aplicada.2}\% a.m.) & Média BACEN (\Sexpr{taxa.bacen}\% a.m.) \\ \hline 
+Parcelas & \Sexpr{n} parcelas de R\$ \Sexpr{formatC(pmt, digits = 2, format = "f", big.mark=".")} & \Sexpr{cmp.t5.1}\\Sexpr{cmp.t5.2}\\Sexpr{cmp.t5.3}\\Sexpr{cmp.t5.4} \\ \hline
+Total & R\$ \Sexpr{formatC(vtd, format="f", big.mark=".", digits=2)} & R\$ \Sexpr{vtd.novo} \\ \hline 
+Diferença & \multicolumn{2}{|p{2.4in}|}{R\$ \Sexpr{dif.novo}} \\ \hline 
+\end{tabular}
+\end{center}
+
+
+\noindent \eject 
+
+\noindent \textbf{Parte V: }Conclusão
+
+\vspace{3mm}
+
+ \Sexpr{cmp.3.iof}\\Sexpr{cmp.2.iof}
+
+ Constata-se que \Sexpr{complemento.1} \Sexpr{tipo.taxa} \Sexpr{complemento.4} é de \Sexpr{taxa.contratada}\% ao mês e de \Sexpr{taxa.contratada.anual.2}\% ao ano, enquanto a taxa de juros aplicada é de \Sexpr{taxa.aplicada.2}\% ao mês e de \Sexpr{taxa.aplicada.anual.2}\% ao ano.
+
+ Caso fosse utilizada a taxa média de juros divulgada pelo Banco Central para \Sexpr{tipo.contrato} a dívida cairia de R\$ \Sexpr{formatC(vtd, digits = 2, format = "f", big.mark=".")} para R\$ \Sexpr{formatC(vtd.B, digits = 2, format = "f", big.mark=".")} e o valor das parcelas cairia de R\$ \Sexpr{formatC(pmt, digits = 2, format = "f", big.mark=".")} para R\$ \Sexpr{formatC(pmt.B, digits = 2, format = "f", big.mark=".")}.
+
+ \Sexpr{cmp.final.1}$\mathrm{{}^\circ}$ \Sexpr{cmp.final.2}\\Sexpr{cmp.final.3}\\Sexpr{cmp.final.4}
+
+A taxa de juros aplicada é de \Sexpr{taxa.aplicada.2}\% ao mês e de \Sexpr{taxa.aplicada.anual.2}\% ao ano, maior do que a taxa média de juros divulgada pelo BACEN para \Sexpr{tipo.contrato}, que é de \Sexpr{taxa.bacen}\% ao mês e de \Sexpr{taxa.bacen.anual}\% ao ano.
+
+\vspace{5mm}
+
+\noindent \textbf{Fontes}: \Sexpr{Banco}
+
+\noindent Banco Central do Brasil
+
+\vspace{8mm}
+
+Equilírio Assessoria Econômica
+
+Diretoria de Assistência Social
+
+Conselho Regional de Economia do RS n$\mathrm{{}^\circ}$ 536
+
+\end{document}

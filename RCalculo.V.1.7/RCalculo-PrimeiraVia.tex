@@ -1,0 +1,406 @@
+
+  
+  \documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{amsmath}
+\usepackage{alltt}[abntex2]
+
+%----------------------------------------------------------------------------------
+% Pacotes Utilizados
+%----------------------------------------------------------------------------------
+
+
+\usepackage[brazilian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{xcolor}
+\usepackage{xwatermark}
+
+\usepackage{helvet}
+
+\UseRawInputEncoding
+
+\usepackage{geometry}
+ 
+\usepackage{graphicx}
+\usepackage{watermark}
+
+\usepackage{longtable}
+\usepackage{booktabs}
+
+\usepackage{draftwatermark}
+ 
+%----------------------------------------------------------------------------------
+% Definicao pré-documento
+%----------------------------------------------------------------------------------
+
+\pagenumbering{gobble}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\renewcommand{\baselinestretch}{1.5}
+
+\geometry{a4paper, top=65.625mm, left=27.5625mm, bottom=57.75mm, right=19.6875mm}
+
+\watermark{\centering \put(-20,0){\includegraphics[scale=1]{test.png}} }
+
+\SetWatermarkText{{\parbox{20cm}{%
+ Equilíbrio Assessoria Econômica - Avenida João Pessoa, n$\mathrm{{}^\circ}$ 52, Sala 39 \\
+ CEP 90.040-000 -- Porto Alegre/RS\\ 
+ recalculos@equilibrioufrgs.com / www.equilibrioufrgs.com\\
+ Fone: + 55 (51) 3308 3347}}}
+\SetWatermarkColor[gray]{0.01}
+\SetWatermarkFontSize{0.35cm}
+\SetWatermarkAngle{0}
+\SetWatermarkHorCenter{12.7cm}
+\SetWatermarkVerCenter{26.5cm}
+
+%----------------------------------------------------------------------------------
+  % Começo do documento
+%----------------------------------------------------------------------------------
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+  
+
+  
+
+    
+
+ 
+
+
+    \begin{flushright}
+  {\Large \textbf{Cálculo Revisional}\par}
+  
+  \vspace{2mm}
+  
+  {\Large Pedro Gonçalves da Silva\par}
+  
+  \vspace{20mm}
+  
+  Porto Alegre, dia \text{25} de Janeiro de \text{2019}
+  \end{flushright}
+  
+  {\Large }
+  
+  \eject
+  
+  \noindent \textbf{Cálculo Revisional de Empréstimo Pessoal}
+  
+  \noindent \textbf{Cliente}: Pedro Gonçalves da Silva -- 345598 -- Empréstimo Pessoal Total do Banco BMG.
+  
+  \vspace{5mm}
+  
+  \noindent A presente análise é composta de 5 partes:
+    
+    \noindent \textbf{Parte I: }Demonstra a composição das prestações pagas e a pagar do cliente através do sistema de amortização de juros da \textbf{TABELA PRICE (Sistema Francês de Amortização) }de acordo com as informações e números atuais do contrato com a empresa financiadora.
+  
+  \noindent \textbf{Parte II: }Demonstra a composição das prestações do financiamento través da \textbf{TABELA PRICE} caso fosse realizado com a taxa de juros média de mercado divulgada pelo \textbf{Banco Central} (BACEN) referente ao mês de \textbf{Fevereiro} de \textbf{\text{2018}}, data da contratação.
+  
+  \noindent \textbf{Parte III: }Considera os \textbf{pagamentos já realizados com a parcela aplicada}, amortizando o restante da dívida com o valor das parcelas indicado na parte II e, dessa forma, atualizando o prazo de quitação e o valor da dívida.
+  
+  \noindent \textbf{Parte IV: }Demonstra a difereça entre os pagamentos conforme a taxa aplicada e a taxa média divulgada pelo Banco Central.
+  
+  \noindent \textbf{Parte V: }Conclusão
+  
+  \eject
+  
+  \textbf{Parte I:}
+  
+  \vspace{5mm}
+  
+  Demonstra a composição das prestações pagas e a pagar do cliente através do sistema de amortização de juros da \textbf{TABELA PRICE (Sistema Francês de Amortização)} de acordo com as informações e números atuais do contrato com a empresa financiadora.
+  
+  \vspace{5mm}
+  
+  \noindent \textbf{Dados retirados do contrato:}
+  
+  \vspace{5mm}
+  
+  \noindent Data de Contratação: 07/02/\text{2018}
+  
+  \noindent Início de Amortização: 01/03/\text{2018}
+  
+  \noindent \text{12} Parcelas \textit{(Baseadas no Sistema Francês de Amortização ou Price)}
+  
+  \noindent Custo Efetivo Total (CET): \text{18,9}\% a.m / \text{698,53}\% a.a
+  
+  \noindent Valor Financiado: \textit{R\$ 2.047,88}
+  
+  \noindent Valor da parcela: R\$ 415,02
+  
+  \noindent IOF: R\$ 47,88
+  
+  \noindent Obs: Há diferença entre o Custo Efetivo Total (CET) (\text{18,9}\% a.m / \text{698,53}\% a.a) e a taxa de juros aplicada (\text{17,27}\% a.m / \text{576,41}\% a.a). 
+  
+  \vspace{5mm}
+  
+  \centerline{A Tabela 1 refere-se ao valor e a composição das prestações pagas pelo Cliente:}
+  \centerline{TABELA 1 - Taxa aplicada ao mês}
+  
+  \vspace{1mm}
+  
+
+    
+    \begin{center}
+
+\begin{longtable}{rrrrr}
+\toprule
+Parcela & Prestação & Juros & Amortização & Valor.total.do.crédito\\
+\midrule
+0 & 0,00 & 0,00 & 0,00 & 2047,88\\
+1 & 415,02 & 353,67 & 61,35 & 1986,53\\
+2 & 415,02 & 343,07 & 71,95 & 1914,58\\
+3 & 415,02 & 330,65 & 84,37 & 1830,21\\
+4 & 415,02 & 316,08 & 98,94 & 1731,27\\
+\addlinespace
+5 & 415,02 & 298,99 & 116,03 & 1615,24\\
+6 & 415,02 & 278,95 & 136,07 & 1479,17\\
+7 & 415,02 & 255,45 & 159,57 & 1319,60\\
+8 & 415,02 & 227,89 & 187,13 & 1132,47\\
+9 & 415,02 & 195,58 & 219,44 & 913,03\\
+\addlinespace
+10 & 415,02 & 157,68 & 257,34 & 655,69\\
+11 & 415,02 & 113,24 & 301,78 & 353,91\\
+12 & 415,02 & 61,11 & 353,91 & 0,00\\
+\bottomrule
+\end{longtable}
+
+
+    \end{center}
+    \vspace{5mm}
+  
+  \begin{center}
+  \begin{tabular}{|p{2in}|p{2in}|p{1.5in}} \hline
+  Valor total da dívida: & \centerline{R\$ 4.980,24} \\ \hline
+  Taxa mensal de juros aplicada: & \centerline{\text{17,27} \%} \\ \hline
+  Taxa anual de juros aplicada: & \centerline{\text{576,41} \%} \\ \hline
+  \end{tabular}
+  \end{center}
+  
+  \vspace{5mm}
+
+
+  
+ Aplicando o CET informado no contrato (\text{18,9}\% a.m) na Tabela Price, a parcela resultante é \textbf{R\$ 442,47} mensais. Utilizando a taxa que realmente esté sendo aplicada (\text{17,27}\% a.m), a parcela resultante é de R\$ 415,02, que é R\$ 27,45 mais barata do que a parcela segundo o CET especificado nos termos do contrato. Ao final das \text{12} parcelas a diferença total da dívida é de \textbf{R\$ 329,40}. 
+
+\noindent \eject 
+
+\noindent \textbf{Parte II:}
+
+Demonstra a composição das prestações do financiamento através da \textbf{TABELA PRICE} caso fosse realizado com a taxa de juros média de mercado divulgada pelo \textbf{Banco Central} (BACEN) referente ao mês de Fevereiro de \text{2018}, data da contratação.
+
+A Tabela 2 refere-se ao recálculo da composição da dívida do beneficiário com aplicação do índice das taxas médias de mercado referentes ao mês de Fevereiro de \text{2018}, que é a data do contrato, para Empréstimo Pessoal Total publicadas pelo Banco Central (baseadas no Sistema Francês de Amortização).
+
+\noindent \textbf{Taxa de juros anual média de mercado: }\text{46,92}\%
+
+\noindent \textbf{Taxa de juros mensal média de mercado: }\text{3,26}\%
+
+\vspace{5mm}
+\centerline{TABELA 2 - BACEN}
+
+
+
+ \vspace{4mm}
+
+\begin{center}
+
+\begin{longtable}{rrrrr}
+\toprule
+Parcela & Prestação & Juros & Amortização & Valor.total.do.crédito\\
+\midrule
+0 & 0,00 & 0,00 & 0,00 & 2047,88\\
+1 & 208,91 & 66,76 & 142,15 & 1905,73\\
+2 & 208,91 & 62,13 & 146,78 & 1758,95\\
+3 & 208,91 & 57,34 & 151,57 & 1607,38\\
+4 & 208,91 & 52,40 & 156,51 & 1450,87\\
+\addlinespace
+5 & 208,91 & 47,30 & 161,61 & 1289,26\\
+6 & 208,91 & 42,03 & 166,88 & 1122,38\\
+7 & 208,91 & 36,59 & 172,32 & 950,06\\
+8 & 208,91 & 30,97 & 177,94 & 772,12\\
+9 & 208,91 & 25,17 & 183,74 & 588,38\\
+\addlinespace
+10 & 208,91 & 19,18 & 189,73 & 398,65\\
+11 & 208,91 & 13,00 & 195,91 & 202,74\\
+12 & 208,91 & 6,17 & 202,74 & 0,00\\
+\bottomrule
+\end{longtable}
+
+
+\end{center}
+
+\vspace{5mm}
+\begin{center}
+\begin{tabular}{|p{2in}|p{2in}|} \hline
+  Valor da dívida com a taxa de juros média do BACEN: & \centerline{R\$ 2.506,92} \\ \hline
+\end{tabular}
+\end{center}
+  
+  \vspace{5mm}
+  
+\noindent \textbf{Diferença entre o juro pago pela taxa aplicada e pela taxa do BACEN:} R\$ 2.473,32.
+
+\noindent \eject 
+
+\noindent \textbf{Parte III:}
+
+
+
+
+
+Considera os \textbf{pagamentos já realizados com a parcela aplicada}, amortizando-se o restante da dívida com o valor das parcelas indicado na parte II. Com isso, o prazo de quitação e o valor da dívida são atualizados.
+
+A Tabela 3 tem como base a taxa de juros média do Banco Central (conforme demonstrada na Tabela 2) e os pagamentos realizados até a data de realização deste recálculo (\text{25}/01/\text{2019}), de acordo com os valores das parcelas no contrato até a parcela  \text{11}. Assim, a dívida já estaria paga na 6$\mathrm{{}^\circ}$ parcela aplicada.
+
+\vspace{5mm}
+\centerline{TABELA 3 -- Com pagamentos}
+\vspace{3mm}
+
+\begin{center}
+
+\begin{longtable}{rrrrr}
+\toprule
+Parcela & Prestação & Juros & Amortização & Valor.total.do.crédito\\
+\midrule
+0 & 0,00 & 0,00 & 0,00 & 2047,88\\
+1 & 415,02 & 66,76 & 348,26 & 1699,62\\
+2 & 415,02 & 55,41 & 359,61 & 1340,01\\
+3 & 415,02 & 43,68 & 371,34 & 968,67\\
+4 & 415,02 & 31,58 & 383,44 & 585,23\\
+\addlinespace
+5 & 415,02 & 19,08 & 395,94 & 189,29\\
+6 & 415,02 & 6,17 & 408,85 & -219,56\\
+\bottomrule
+\end{longtable}
+
+
+
+\begin{tabular}{|p{2.4in}|p{0.8in}|} \hline 
+Novo prazo de quitação da dívida & \text{6} parcelas \\ \hline 
+Novo valor da dívida & R\$  2.270,56\\ \hline 
+\end{tabular}
+\end{center}
+
+\noindent \eject 
+
+\noindent \textbf{Parte IV:}
+
+A Tabela 4 demonstra a diferença entre os pagamentos conforme a taxa aplicada (Parte I) e os pagamentos conforme a taxa média divulgada pelo Banco Central (Parte II).
+
+\vspace{5mm}
+
+\centerline{TABELA 4}
+
+\vspace{3mm}
+
+\begin{center}
+\begin{tabular}{|p{1in}|p{1.8in}|p{1.8in}|} \hline 
+Taxa & Aplicada (\text{17,27}\% a.m.) & Média BACEN (\text{3,26}\% a.m.) \\ \hline 
+Parcelas & \text{12} parcelas de R\$ 415,02 & \text{12} parcelas de R\$ 208,91 \\ \hline 
+Total & R\$ 4.980,24 & R\$ 2.506,92 \\ \hline 
+Diferença & \multicolumn{2}{|p{2.4in}|}{R\$ 2.473,32} \\ \hline 
+\end{tabular}
+\end{center}
+
+\vspace{5mm}
+
+A Tabela 5 demonstra a diferença total entre a dívida dos pagamentos conforme a taxa aplicada e a dívida dos pagamentos já efetuados (com a parcela contratada) com as prestações futuras (calculadas pela taxa média divulgada pelo Banco Central). Ou seja, entre as dívidas da Parte I e da Parte III.
+
+\vspace{5mm}
+
+\centerline{TABELA 5}
+
+\vspace{3mm}
+
+\begin{center}
+\begin{tabular}{|p{1in}|p{1.8in}|p{1.8in}|} \hline 
+Taxa & Aplicada (\text{17,27}\% a.m.) & Média BACEN (\text{3,26}\% a.m.) \\ \hline 
+Parcelas & \text{12} parcelas de R\$ 415,02 & 5 parcelas de R\$ 415,02  e 1 parcela de R\$ 195,46\ \\ \hline
+Total & R\$ 4.980,24 & R\$ 2.270,56 \\ \hline 
+Diferença & \multicolumn{2}{|p{2.4in}|}{R\$ 2.709,68} \\ \hline 
+\end{tabular}
+\end{center}
+
+
+\noindent \eject 
+
+\noindent \textbf{Parte V: }Conclusão
+
+\vspace{3mm}
+
+ É cobrado IOF no valor de R\$ 47,88
+
+ Constata-se que o CET contratado é de \text{18,9}\% ao mês e de \text{698,53}\% ao ano, enquanto a taxa de juros aplicada é de \text{17,27}\% ao mês e de \text{576,41}\% ao ano.
+
+ Caso fosse utilizada a taxa média de juros divulgada pelo Banco Central para Empréstimo Pessoal Total a dívida cairia de R\$ 4.980,24 para R\$ 2.506,92 e o valor das parcelas cairia de R\$ 415,02 para R\$ 208,91.
+
+ Considerando-se que foram pagas as  11  primeiras parcelas do empréstimo, caso fosse aplicada a taxa média de juros do BACEN  a dívida já estaria paga na 6$\mathrm{{}^\circ}$ parcela aplicada e o valor total da dívida diminuiria para R\$ 2.270,56 . Nesse caso, deve haver uma restituição de R\$ 2.294,66 por parte do Banco BMG .
+
+A taxa de juros aplicada é de \text{17,27}\% ao mês e de \text{576,41}\% ao ano, maior do que a taxa média de juros divulgada pelo BACEN para Empréstimo Pessoal Total, que é de \text{3,26}\% ao mês e de \text{46,92}\% ao ano.
+
+\vspace{5mm}
+
+\noindent \textbf{Fontes}: BMG
+
+\noindent Banco Central do Brasil
+
+\vspace{8mm}
+
+Equilírio Assessoria Econômica
+
+Diretoria de Assistência Social
+
+Conselho Regional de Economia do RS n$\mathrm{{}^\circ}$ 536
+
+\end{document}

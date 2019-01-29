@@ -1,0 +1,418 @@
+<<Chunk1,echo=FALSE>>=
+
+  repositorio = "C:\\Users\\Pedro.Pedro-PC\\Desktop\\RCalculo.V.1.7"
+  autor = "Equilibrio"
+  
+  ######PARECER#########
+  
+  #BEM VINDOS AO RCALCULOS.V.1.7. Insira os dados do contrato e siga os procedimentos:
+  #1)Características pessoais (APENAS AQUI UTILIZE ASPAS "" NAS INFORMAÇÕES. EX: "Crefisa". Os dados devem aparecer na cor verde)
+  Nome = "Nelcy Alves Bernardes"
+  Numero.de.contrato = "1210225256"
+  Banco = 'Agiplan'
+  
+  #2)Data de Contrato (APARTIR DAQUI, NÃO UTILIZE ASPAS "" EM NENHUM CAMPO. Os dados devem aparecer na cor azul)
+  dia.c = 27
+  mes.c = 03
+  ano.c = 2017
+  
+  #3)Início de Amortização
+  dia.a = 6
+  mes.a = 9
+  ano.a = 2017
+  
+  #4)Tipo de contrato(1- Crédito Pessoal Total; 2-Crédito Pessoal Consignado Total; 3-Aquisição de Veículos; 4-Crédito Pessoal Consignado para setor público ; 5-Aquisição de outros bens)
+  tipo.de.contrato = 2
+  
+  #5)Tipo de taxa(1- taxa de juros; 2- CET)
+  tipo.de.taxa = 2
+  
+  #6)Taxa contratada
+  #ATENÇÃO!(se a opcao da informação (5) for taxa de juros, utilize a taxa mensal. Caso for CET, utilize a taxa anual)
+  taxa.contratada = 335.59
+  
+  #7)Características do contrato
+  parcelas = 1
+  valor.do.emprestimo = 592.19
+  valor.da.prestacao = 1123.02
+  
+  #8)Informação do valor do IOF (CASO NÃO HOUVER IOF, COLOQUE "0" ZERO)
+  valor.IOF = 10.1
+  
+  #9)Informações Bacen (taxa ANUAL)
+  taxa.bacen.anual = 29.30
+  
+  #PARABENS, chegamos ao FIM. 
+  #Depois de preencher TODOS os dados, clique em "Compile PDF". Se o documento não abrir automaticamente, pressione o ícone na direita de "compile PDF".
+  #Caso não aparecer uma frase na capa dizendo que o contrato não está abusivo, o contrato está abusivo, então imprima o documento e estamos prontos.
+  
+  #link do site da bacen: https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries
+  
+  #20745- Crédito Pessoal Consignado para setor público
+  #20748 - Crédito Pessoal Total (boleto)
+  #20747 - Crédito Pessoal Consignado Total (débito)
+  #20749 - Aquisição de Veículos 
+  #20750- Aquisição de outros bens
+@
+
+\documentclass{article}[abntex2]
+
+%----------------------------------------------------------------------------------
+% Pacotes Utilizados
+%----------------------------------------------------------------------------------
+
+
+\usepackage[brazilian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{xcolor}
+\usepackage{xwatermark}
+
+\usepackage{helvet}
+
+\UseRawInputEncoding
+
+\usepackage{geometry}
+ 
+\usepackage{graphicx}
+\usepackage{watermark}
+
+\usepackage{longtable}
+\usepackage{booktabs}
+
+\usepackage{draftwatermark}
+ 
+%----------------------------------------------------------------------------------
+% Definicao pré-documento
+%----------------------------------------------------------------------------------
+
+\pagenumbering{gobble}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\renewcommand{\baselinestretch}{1.5}
+
+\geometry{a4paper, top=65.625mm, left=27.5625mm, bottom=57.75mm, right=19.6875mm}
+
+\watermark{\centering \put(-20,0){\includegraphics[scale=1]{test.png}} }
+
+\SetWatermarkText{{\parbox{20cm}{%
+ Equilíbrio Assessoria Econômica - Avenida João Pessoa, n$\mathrm{{}^\circ}$ 52, Sala 39 \\
+ CEP 90.040-000 -- Porto Alegre/RS\\ 
+ equilibrioaes@gmail.com / www.ufrgs.br/equilibrio\\
+ Fone: + 55 (51) 3308 3347}}}
+\SetWatermarkColor[gray]{0.01}
+\SetWatermarkFontSize{0.35cm}
+\SetWatermarkAngle{0}
+\SetWatermarkHorCenter{12.7cm}
+\SetWatermarkVerCenter{26.5cm}
+
+%----------------------------------------------------------------------------------
+  % Começo do documento
+%----------------------------------------------------------------------------------
+  
+  \begin{document}
+
+<<Chunk2,echo=FALSE>>=
+  if (!is.element("devtools", installed.packages()[,1])){
+        install.packages("devtools", dep = TRUE)}
+  
+  if (!is.element("FinCal", installed.packages()[,1])){
+   library(devtools)     
+   install_github("felixfan/FinCal")}
+
+  if (!is.element("knitr", installed.packages()[,1])){
+        install_github("knitr")}
+  
+  if (!is.element("kableExtra", installed.packages()[,1])){
+        install.packages("kableExtra", dep = TRUE)}
+
+   if (!is.element("xlsx", installed.packages()[,1])){
+        install.packages("xlsx", dep = TRUE)}
+  
+  options(OutDec = ",")
+  options(scipen=999)
+  library(FinCal)
+  
+  #TAXA CONTRATADA
+  if (tipo.de.taxa == 1) {
+  fv.2 = fv(taxa.contratada/100, 12, pv=1)
+  taxa.contratada.anual.1 = (1+taxa.contratada/100)**12-1
+  taxa.contratada.anual.2 = round(taxa.contratada.anual.1*100, digits = 2)
+  }
+  
+  if (tipo.de.taxa == 2){
+    taxa.contratada.anual.2 = taxa.contratada
+    taxa.contratada = ((1+taxa.contratada/100)**(1/12)-1)*100
+  }
+  
+    pmt.contratado = round(-(pmt(taxa.contratada/100, n = parcelas, pv = valor.do.emprestimo,fv = 0, type = 0)), digits = 2)
+    
+  #TAXA APLICADA
+  taxa.aplicada.1 = discount.rate(n=parcelas, fv = 0, pmt = -(valor.da.prestacao), pv = valor.do.emprestimo,lower=0.0001, upper = 1)
+  taxa.aplicada.2 = round(taxa.aplicada.1*100, digits = 2)
+
+  taxa.aplicada.anual.1 <- (1+taxa.aplicada.1)**12-1
+  taxa.aplicada.anual.2 = round(taxa.aplicada.anual.1*100, digits = 2)
+  
+  #TAXA BACEN
+  taxa.bacen.1 = ((1+taxa.bacen.anual/100)**(1/12))-1
+  taxa.bacen = round(taxa.bacen.1*100, digits = 2)
+  @
+  
+    <<Chunk3,echo=FALSE>>=
+    if (tipo.de.contrato == 1) {
+      tipo.contrato = "Empréstimo Pessoal Total"
+    }
+  if (tipo.de.contrato == 2) {
+    tipo.contrato = "Empréstimo Pessoal Consignado Total"
+  }
+  if (tipo.de.contrato == 3) {
+    tipo.contrato = "Financiamento de Veículo"
+  }
+   if (tipo.de.contrato == 4) {
+    tipo.contrato = "Crédito Pessoal Consignado para setor público"
+   }
+   if (tipo.de.contrato == 5) {
+    tipo.contrato = "Aquisição de outros bens"
+  }
+  
+  if (tipo.de.taxa == 1) {
+    tipo.taxa = "taxa de juros"
+    tipo.taxa.2 = "taxa de juros contratada"
+    tipo.taxa.3 = "Taxa de juros contratada"
+    complemento.1 = "a"
+    complemento.2 = "informada"
+    complemento.3 = "especificada"
+    complemento.4 = "contratada"
+    }
+  
+  if (tipo.de.taxa == 2) {
+    tipo.taxa = "CET"
+    tipo.taxa.2 = "Custo Efetivo Total (CET)"
+    tipo.taxa.3 = tipo.taxa.2
+    complemento.1 = "o"
+    complemento.2 = "informado"
+    complemento.3 = "especificado"
+    complemento.4 = "contratado"
+  }
+  
+   dia = as.numeric(substr(x = as.character(Sys.Date()), start = 9, stop = 10))
+   mes = as.numeric(substr(x = as.character(Sys.Date()), start = 6, stop = 7))
+   ano = as.numeric(substr(x = as.character(Sys.Date()), start = 1, stop = 4))
+  
+  if (taxa.aplicada.2<taxa.bacen) {
+    gg = ""
+    cmp.1 = "menor"
+  }
+   if (taxa.aplicada.2==taxa.bacen) {
+    gg = ""
+    cmp.1 = "a mesma"
+  }
+   if(taxa.aplicada.2>taxa.bacen) {
+     gg = "A TAXA ESTA ABUSIVA! UTILIZE O ARQUIVO DE RECALCULO!"
+     cmp.1 = "maior"
+   }
+   
+   if (valor.IOF>0) {
+     cmp.1.iof = "IOF: R"
+     cmp.2.iof = paste("$",as.character(formatC(valor.IOF, digits = 2, format = "f", big.mark=".")))
+     cmp.3.iof = "É cobrado IOF no valor de R"
+   }
+   if (valor.IOF == 0) {
+     cmp.1.iof = ""
+     cmp.2.iof = ""
+     cmp.3.iof = ""
+   }
+  @
+    
+<<Chunk4,echo=FALSE>>=
+#Arrumando meses
+  if (mes==1) {
+    mes.por.extenso = "Janeiro"
+  }
+  if (mes==2) {
+    mes.por.extenso = "Fevereiro"
+  }
+  if (mes==3) {
+    mes.por.extenso = "Março"
+  }
+  if (mes==4) {
+    mes.por.extenso = "Abril"
+  }
+  if (mes==5) {
+    mes.por.extenso = "Maio"
+  }
+  if (mes==6) {
+    mes.por.extenso = "Junho"
+  }
+  if (mes==7) {
+    mes.por.extenso = "Julho"
+  }
+  if (mes==8) {
+    mes.por.extenso = "Agosto"
+  }
+  if (mes==9) {
+    mes.por.extenso = "Setembro"
+  }
+  if (mes==10) {
+    mes.por.extenso = "Outubro"
+  }
+  if (mes==11) {
+    mes.por.extenso = "Novembro"
+  }
+  if (mes==12) {
+    mes.por.extenso = "Dezembro"
+  }
+  
+@
+ 
+<<Chunk5,echo=FALSE>>=
+#Arrumando meses
+  if (mes.c==1) {
+    mes.c.2 = "Janeiro"
+  }
+  if (mes.c==2) {
+    mes.c.2 = "Fevereiro"
+  }
+  if (mes.c==3) {
+    mes.c.2 = "Março"
+  }
+  if (mes.c==4) {
+    mes.c.2 = "Abril"
+  }
+  if (mes.c==5) {
+    mes.c.2 = "Maio"
+  }
+  if (mes.c==6) {
+    mes.c.2 = "Junho"
+  }
+  if (mes.c==7) {
+    mes.c.2 = "Julho"
+  }
+  if (mes.c==8) {
+    mes.c.2 = "Agosto"
+  }
+  if (mes.c==9) {
+    mes.c.2 = "Setembro"
+  }
+  if (mes.c==10) {
+    mes.c.2 = "Outubro"
+  }
+  if (mes.c==11) {
+    mes.c.2 = "Novembro"
+  }
+  if (mes.c==12) {
+    mes.c.2 = "Dezembro"
+  }
+
+#Criando os meses e dias de contratacao no formato oficial   
+  if (mes<10) {
+    mes.f = paste("0",as.character(mes), sep="")
+  } 
+  
+  if (mes>=10) {
+    mes.f = mes
+  }
+  if (dia<10) {
+    dia.f = paste("0",as.character(dia), sep="")
+  } 
+  
+  if (dia>=10) {
+    dia.f = dia
+  }   
+#Criando os meses e dias de contratacao no formato oficial   
+  if (mes.c<10) {
+    mes.c.f = paste("0",as.character(mes.c), sep="")
+  } 
+  
+  if (mes.c>=10) {
+    mes.c.f = mes.c
+  }
+  if (dia.c<10) {
+    dia.c.f = paste("0",as.character(dia.c), sep="")
+  } 
+  
+  if (dia.c>=10) {
+    dia.c.f = dia.c
+  }     
+#Criando os meses e dias de amortizacao no formato oficial
+  if (mes.a<10) {
+    mes.a.f = paste("0",as.character(mes.a), sep="")
+  } 
+  
+  if (mes.a>=10) {
+    mes.a.f = mes.a
+  }
+  if (dia.a<10) {
+    dia.a.f = paste("0",as.character(dia.a), sep="")
+  } 
+  
+  if (dia.a>=10) {
+    dia.a.f = dia.a
+  } 
+   
+   if (dia<10) {
+  dia.registro = paste("0", as.character(dia), sep = "")
+} else  {dia.registro = dia}
+if (mes < 10) {
+  mes.registro = paste("0", as.character(mes), sep = "")
+  } else  {mes.registro = mes}
+   
+   anotacoes.excel = data.frame(nome.autor = autor, "", Beneficiado = Nome, Tipo.de.contrato = tipo.contrato, Banco.de.contrato = Banco, Abusividade = "NAO", valor.emprestimo = valor.do.emprestimo, taxa.de.contrato = taxa.contratada/100, numero.de.parcelas = parcelas, valor.das.parcelas = valor.da.prestacao, taxa.de.aplicacao = taxa.aplicada.1, valor.total.divida = "", taxa.do.bacen = taxa.bacen/100, valor.divida.bacen = "", diferenca.valores = "", "",data.realizacao = paste(dia.registro,"/",mes.registro,"/",ano,sep = ""))
+
+setwd(repositorio)
+   
+   library(xlsx)
+   if (taxa.aplicada.2<taxa.bacen) {
+
+if (!file.exists("registro.xlsx")) {
+  write.xlsx(anotacoes.excel,"registro.xlsx", append = T, row.names = F)
+} else {
+  registro.existente = read.xlsx("registro.xlsx", sheetIndex = 1)
+  novo.registro = rbind(registro.existente, anotacoes.excel)
+  file.remove("registro.xlsx")
+  write.xlsx(novo.registro,"registro.xlsx", append = T, row.names = F)
+}
+   }
+   
+@
+
+    \begin{flushright}
+  {\Large \textbf{Cálculo Revisional}\par}
+  
+  \vspace{2mm}
+  
+  {\Large \Sexpr{Nome}\par}
+  
+  \vspace{20mm}
+  
+  Porto Alegre, dia \Sexpr{dia} de \Sexpr{mes.por.extenso} de \Sexpr{ano}
+  \end{flushright}
+  
+  \vspace{50mm}
+  
+  {\Large \Sexpr{gg}}
+  
+  \eject
+  
+  \noindent \textbf{\centerline{Cálculo Revisional de Empréstimo Pessoal}}
+  
+  \noindent \textbf{Cliente}: \Sexpr{Nome} -- \Sexpr{Numero.de.contrato} -- \Sexpr{tipo.contrato} do Banco \Sexpr{Banco}.
+  
+    \vspace{7mm}
+  
+A taxa de juros efetiva (usada para cálculo do valor da dívida e do valor das prestações) é \Sexpr{cmp.1} que a taxa contratada. A taxa efetiva é \Sexpr{cmp.1} que a taxa média do Banco Central para \Sexpr{tipo.contrato}.
+
+  
+
+
+\vspace{50mm}
+
+\noindent \textbf{Fontes}: \Sexpr{Banco}
+
+\noindent Banco Central do Brasil
+
+
+\end{document}
